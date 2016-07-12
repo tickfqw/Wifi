@@ -29,15 +29,13 @@ public class WifiAdmin {
     }
     //打开wifi
     public void openWifi(){
-         if(!mWifiManager.isWifiEnabled()){
                  mWifiManager.setWifiEnabled(true);
-         }
     }
     //关闭wifi
     public void closeWifi(){
-        if(!mWifiManager.isWifiEnabled()){
+
             mWifiManager.setWifiEnabled(false);
-        }
+
     }
     // 检查当前wifi状态
     public int checkState() {
