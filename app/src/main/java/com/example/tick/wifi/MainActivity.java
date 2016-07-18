@@ -103,16 +103,19 @@ public class MainActivity extends AppCompatActivity {
         //开始扫描网络
         mWifiAdmin.startScan();
         list=mWifiAdmin.getWifiList();
+        WifiDAO wifiDAO = new WifiDAO(MainActivity.this);
         if(list!=null){
             for(int i=0;i<list.size();i++){
                 //得到扫描结果
                 mScanResult=list.get(i);
+                Tb_wifi tb_wifi = new Tb_wifi(mScanResult.SSID,"lhbg2016");
+                wifiDAO.add(tb_wifi);// 添加收入信息
                 sb.add(mScanResult);
             }
-            WifiDAO wifiDAO = new WifiDAO(MainActivity.this);
+
             //Tb_wifi tb_wifi = new Tb_wifi(wifiDAO.getMaxId() + 1,"name","password");
-            Tb_wifi tb_wifi = new Tb_wifi("AK47-2016","lhbg2016");
-            wifiDAO.add(tb_wifi);// 添加收入信息
+
+
             //allNetWork.setText("扫描到的wifi网络：\n"+sb.toString());
             WifiAdapter adapter=new WifiAdapter(this,R.layout.wifi_item,list);
             allNetWork.setAdapter(adapter);
