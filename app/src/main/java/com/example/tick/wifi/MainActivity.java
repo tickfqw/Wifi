@@ -52,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             // TODO Auto-generated method stub
+            int sum = 0;
             int state = mWifiAdmin.checkState();
             String showstate = null;
             switch (state){
@@ -66,15 +67,25 @@ public class MainActivity extends AppCompatActivity {
             }
             switch (v.getId()) {
                 case R.id.scan://扫描网络
-                    getAllNetWorkList();
+                    if(state == 1){
+                        Toast.makeText(MainActivity.this, "当前wifi状态为："+showstate+".请打开wifi", Toast.LENGTH_SHORT).show();
+                    }else if(state == 3) {
+                        getAllNetWorkList();
+                    }
                     break;
                 case R.id.start://打开Wifi
                     mWifiAdmin.openWifi();
-                    Toast.makeText(MainActivity.this, "当前wifi状态为：" + showstate, Toast.LENGTH_SHORT).show();
+                   /* for (int i=0;i<50000000000;i++){
+                        sum = sum + i;
+                    }*/
+                    //Toast.makeText(MainActivity.this, "当前wifi状态为：" + showstate, Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.stop://关闭Wifi
                     mWifiAdmin.closeWifi();
-                    Toast.makeText(MainActivity.this, "当前wifi状态为："+showstate, Toast.LENGTH_SHORT).show();
+                   /* for (int i=0;i<50000000000;i++){
+                        sum = sum + i;
+                    }*/
+                    //Toast.makeText(MainActivity.this, "当前wifi状态为："+showstate, Toast.LENGTH_SHORT).show();
                     break;
                 case R.id.check://Wifi状态
                     Toast.makeText(MainActivity.this, "当前wifi状态为："+showstate, Toast.LENGTH_SHORT).show();
@@ -98,6 +109,10 @@ public class MainActivity extends AppCompatActivity {
                 mScanResult=list.get(i);
                 sb.add(mScanResult);
             }
+            WifiDAO wifiDAO = new WifiDAO(MainActivity.this);
+            //Tb_wifi tb_wifi = new Tb_wifi(wifiDAO.getMaxId() + 1,"name","password");
+            Tb_wifi tb_wifi = new Tb_wifi("AK47-2016","lhbg2016");
+            wifiDAO.add(tb_wifi);// 添加收入信息
             //allNetWork.setText("扫描到的wifi网络：\n"+sb.toString());
             WifiAdapter adapter=new WifiAdapter(this,R.layout.wifi_item,list);
             allNetWork.setAdapter(adapter);
@@ -113,15 +128,21 @@ public class MainActivity extends AppCompatActivity {
                     View view1 = LayoutInflater.from(MainActivity.this).inflate(R.layout.dialog, null);
                     builder.setView(view1);
 
-                    TextView username = (TextView)view1.findViewById(R.id.username);
-                    EditText password = (EditText)view1.findViewById(R.id.password);
+                    final TextView username = (TextView)view1.findViewById(R.id.username);
+                    final EditText password = (EditText)view1.findViewById(R.id.password);
 
                     username.setText(sb.get(position).SSID);
+                    final String tmp_name = sb.get(position).SSID;
 
                     builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            Toast.makeText(MainActivity.this, "positive: " + which, Toast.LENGTH_SHORT).show();
+                            WifiDAO wifiDAO1 = new WifiDAO(MainActivity.this);
+                            if (wifiDAO1.find(tmp_name).getPassword().equals(password.getText().toString())) {
+                                Toast.makeText(MainActivity.this, "连接成功！", Toast.LENGTH_SHORT).show();
+                            } else {
+                                Toast.makeText(MainActivity.this, "请输入正确的密码！", Toast.LENGTH_SHORT).show();
+                            }
                         }
                     });
                     //    设置一个NegativeButton
